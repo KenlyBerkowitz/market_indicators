@@ -1,0 +1,70 @@
+// This script overlays two SMA's, a EMA, and a VWAP indicators over the main chart.
+//@version=4
+
+study("SMA/EMA/VWAP", shorttitle="MA's", overlay = true)
+
+
+
+
+// SMA
+// This code block gives you a boolen checkbox to turn on and off the two SMA's.
+// The two SMA's can be adjusted to whatever input session the user would like
+
+boolVar1 = input(title="SMA's", type=input.bool, defval=true)       //returns a bool for turning on and off the indicator
+inputVal1 = input(50, title="Period 1", type=input.integer, maxval=200)
+inputVal2 = input(200, title="Period 2", type=input.integer, maxval=200)
+
+//plots both SMA's
+plot(boolVar1 ? sma(close, inputVal1) : na, title="SMA 1", linewidth = 2, color = color.new(#008080, 25))
+plot(boolVar1 ? sma(close, inputVal2) : na, title="SMA 2", linewidth = 2, color = color.new(#FF9800,50))
+
+
+
+
+// EMA
+// This code block gives you a boolen checkbox to turn on and off the EMA.
+// The EMA can be adjusted to whatever input session the user would like
+
+boolVar2 = input(title="EMA", type=input.bool, defval=false)         //returns a bool for turning on and off the indicator
+
+len = input(9, minval=1, title="Length")
+src = input(close, title="Source")
+offset = input(title="Offset", type=input.integer, defval=0, minval=-500, maxval=500)
+out = ema(src, len)
+
+boolVar4 = input(title="21 EMA and 55 EMA", type=input.bool, defval=false)         //returns a bool for turning on and off the indicators for 21 and 55 EMA
+
+//plots the EMA's on the charts
+plot(boolVar2 ? out : na, title="EMA", linewidth = 1, color=color.new(#2129ba,30), offset=offset)  // session EMA set by user, deafault 9 EMA
+plot(boolVar4 ? ema(src, 21) : na, title="21 EMA", linewidth = 1, color=color.new(#ba2163,40))     // set 21 EMA
+plot(boolVar4 ? ema(src, 55) : na, title="55 EMA", linewidth = 1, color=color.new(#02fc13,50))     // set 55 EMA
+
+
+
+
+// VWAP
+// This code block gives you a boolen checkbox to turn on and off the VWAP.
+// The VWAP can be adjusted to Day, Week, Month and the default is month
+
+boolVar3 = input(title="VWAP", type=input.bool, defval=true)        //returns a bool for turning on and off the indicator
+sessionType = input(title="Range", type=input.string, defval="Month", options =["Day", "Week", "Month"])
+
+//checks to see the input and changes the string to a single char in string format in order for time() to use it
+if sessionType == "Day"
+    sessionType := "D"
+else  if sessionType == "Week"
+    sessionType := "W"
+else  if sessionType == "Month"
+    sessionType := "M"
+
+t = time(sessionType)
+start = na(t[1]) or t > t[1]
+
+sumSrc = src * volume
+sumVol = volume
+
+sumSrc := start ? sumSrc : sumSrc + sumSrc[1]
+sumVol := start ? sumVol : sumVol + sumVol[1]
+
+//plots the VWAP on the chart
+plot(boolVar3 ? sumSrc / sumVol : na, title = "VWAP", linewidth = 2, color = color.new(#E040FB, 50))
