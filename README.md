@@ -2,7 +2,7 @@
 Being written in pine script, this script is to be used in the Tradingview web application. <br/>
 Copy the code and put it in the pine editor within Tradingview. From here, you can add the <br/>
 indicator to the chart by selecting "add to chart" button in the top bar above the editor.<br/>
-The indicators will be overlayed over the chart, and it will be initialized with two SMA's <br/>
+The indicators will be overlaid over the chart, and it will be initialized with two SMA's <br/>
 and the VWAP. Adjust the settings for your needs. <br/>
 
 This script consists of a total of 6 indicators that can be selected to be visible or not.<br/>These indicators include: 
